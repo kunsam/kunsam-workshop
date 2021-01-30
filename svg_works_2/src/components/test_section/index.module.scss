@@ -1,0 +1,30 @@
+.h2title {
+  bottom: 0%;
+  width: 66%;
+  z-index: 998;
+  position: absolute;
+  color: transparent;
+  word-wrap: break-word;
+  font-family: "Favorit";
+  text-transform: uppercase;
+  font-size: calc(16vmin + 16px);
+  font-weight: normal !important;
+  line-height: calc(16vmin + 16px);
+
+  margin: var(--plank);
+  -webkit-text-stroke-color: var(--milk);
+  -webkit-text-stroke-width: var(--strokewidth);
+}
+
+.h1title {
+  bottom: 0%;
+  position: absolute;
+  font-family: "Favorit";
+  font-size: calc(16vmin + 16px);
+  font-weight: normal !important;
+  line-height: calc(16vmin + 16px);
+  color: var(--milk);
+  margin: var(--plank);
+  text-transform: uppercase;
+  width: 66%;
+}

@@ -1,0 +1,29 @@
+{
+    "name": "svg_works",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start"
+    },
+    "author": "kunsam",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/lodash": "^4.14.168",
+        "@types/node": "^14.14.21",
+        "@types/react": "^17.0.0",
+        "typescript": "^4.1.3"
+    },
+    "dependencies": {
+        "@svgdotjs/svg.js": "^3.0.16",
+        "lodash": "^4.17.20",
+        "next": "^10.0.5",
+        "react": "^17.0.1",
+        "react-dom": "^17.0.1",
+        "sass": "^1.32.5",
+        "svgpath": "^2.3.0",
+        "three": "^0.124.0"
+    }
+}

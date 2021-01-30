@@ -1,0 +1,24 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --plank: 6vmin;
+  --unit: 100vmin;
+  --blue: #2c367c;
+  --milk: grey;
+  --strokewidth: 2px;
+}
+
+@media only screen and (max-width: 640px) {
+  :root {
+    --strokewidth: 1px;
+  }
+}
+
+.t_section {
+  background: var(--blue);
+  stroke: var(--milk);
+  fill: var(--blue);
+}
