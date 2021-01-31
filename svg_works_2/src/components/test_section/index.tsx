@@ -10,12 +10,13 @@ function Component() {
       id="section2"
       className="t_section"
       style={{
+        position: "relative",
         width: "100vw",
-        height: globalcontext.relativeUnit
+        height: globalcontext.relativeUnit,
       }}
     >
-      {/* <h1 className={styles.h1title}>Cons­truc­tion</h1>
-      <h2 className={styles.h2title}>Cons­truc­tion</h2> */}
+      <h1 className={styles.h1title}>Cons­truc­tion</h1>
+      <h2 className={styles.h2title}>Cons­truc­tion</h2>
       <div
         style={{
           position: "absolute",
