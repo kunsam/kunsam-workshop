@@ -22,3 +22,7 @@ body {
   stroke: var(--milk);
   fill: var(--blue);
 }
+
+svg {
+  stroke-width: var(--strokewidth);
+}

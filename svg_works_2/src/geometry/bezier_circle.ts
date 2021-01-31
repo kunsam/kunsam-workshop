@@ -98,9 +98,19 @@ export function getBesizerApproCircularArcPath(
 ) {
   const p0_anlge = MathUtils.degToRad(45);
   const P0_relative_angle = MathUtils.degToRad(endPointAngleDegree) - p0_anlge;
+  const toPrecision = (num: number, precision: number) => {
+    const base = Math.pow(10, precision);
+    return Math.round((num * base) / base);
+  };
   const P0 = new Vector2(
-    center.x + raduis * Math.cos(MathUtils.degToRad(endPointAngleDegree)),
-    center.y + raduis * Math.sin(MathUtils.degToRad(endPointAngleDegree))
+    toPrecision(
+      center.x + raduis * Math.cos(MathUtils.degToRad(endPointAngleDegree)),
+      2
+    ),
+    toPrecision(
+      center.y + raduis * Math.sin(MathUtils.degToRad(endPointAngleDegree)),
+      2
+    )
   );
   const p0 = new Vector2(Math.cos(p0_anlge), Math.sin(p0_anlge));
   const p1 = new Vector2(
@@ -110,18 +120,30 @@ export function getBesizerApproCircularArcPath(
   const p1_anlge = Math.atan(p1.y / p1.x);
   const p1_raduis = raduis * Math.sqrt(Math.pow(p1.x, 2) + Math.pow(p1.y, 2));
   const P1 = new Vector2(
-    center.x + p1_raduis * Math.cos(p1_anlge + P0_relative_angle),
-    center.y + p1_raduis * Math.sin(p1_anlge + P0_relative_angle)
+    toPrecision(
+      center.x + p1_raduis * Math.cos(p1_anlge + P0_relative_angle),
+      2
+    ),
+    toPrecision(
+      center.y + p1_raduis * Math.sin(p1_anlge + P0_relative_angle),
+      2
+    )
   );
   const p2_anlge = -1 * p1_anlge;
   const P2 = new Vector2(
-    center.x + p1_raduis * Math.cos(p2_anlge + P0_relative_angle),
-    center.y + p1_raduis * Math.sin(p2_anlge + P0_relative_angle)
+    toPrecision(
+      center.x + p1_raduis * Math.cos(p2_anlge + P0_relative_angle),
+      2
+    ),
+    toPrecision(
+      center.y + p1_raduis * Math.sin(p2_anlge + P0_relative_angle),
+      2
+    )
   );
   const p3_angle = -1 * p0_anlge;
   const P3 = new Vector2(
-    center.x + raduis * Math.cos(p3_angle + P0_relative_angle),
-    center.y + raduis * Math.sin(p3_angle + P0_relative_angle)
+    toPrecision(center.x + raduis * Math.cos(p3_angle + P0_relative_angle), 2),
+    toPrecision(center.y + raduis * Math.sin(p3_angle + P0_relative_angle), 2)
   );
   return {
     path: `M ${P0.x} ${P0.y} C ${P1.x} ${P1.y} ${P2.x} ${P2.y} ${P3.x} ${P3.y}`,
