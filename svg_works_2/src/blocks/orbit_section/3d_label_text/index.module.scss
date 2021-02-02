@@ -1,0 +1,67 @@
+.LabelText3DDisable {
+  & > div,
+  &::before {
+    transform: none !important;
+  }
+}
+
+.LabelText3D {
+  position: relative;
+  perspective: 20em;
+  display: grid;
+  transform-style: preserve-3d;
+  &:before {
+    --bw: 4px;
+    grid-area: 1 / 1;
+    content: "";
+    backface-visibility: hidden;
+    height: 50px;
+    width: 100px;
+    height: 100%;
+    width: 100%;
+    margin-top: calc(-1 * var(--bw));
+    margin-left: calc(-1 * var(--bw));
+    background: transparent;
+    transform: translateX(-4px) rotateY(-30deg) rotateX(15deg) scale(1.03);
+    pointer-events: none;
+    border: var(--bw) solid #7818eb;
+    box-sizing: content-box;
+  }
+  & > div,
+  &:before {
+    will-change: transform;
+    transition: 0.3s transform cubic-bezier(0.25, 0.46, 0.45, 1);
+  }
+  :global(.card) {
+    grid-area: 1 / 1;
+    height: 50px;
+    width: 100px;
+    transform: translateX(10px) rotateY(25deg) rotateX(10deg);
+    background: rgba(249, 198, 26, 0.88);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    color: #000;
+    text-transform: uppercase;
+    font-weight: 900;
+    backface-visibility: hidden;
+    box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.1);
+    & > h1 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 24px;
+    }
+    :global(.enclosed) {
+      background: #000;
+      color: rgba(249, 198, 26, 1);
+      padding: 0 2px;
+      line-height: 24px;
+      display: inline-block;
+      transform: translate(-1px, 1px) scale(0.75);
+      transform-origin: right center;
+      font-size: 16px;
+      margin-right: 4px;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+.P3DCard {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transform: perspective(800px);
+  transform: perspective(800px);
+  :global(.card) {
+    width: 450px;
+    height: 300px;
+    text-align: center;
+    background-size: 100% 100%;
+    border-radius: 10px;
+    box-shadow: 20px 20px 75px rgba(0, 0, 0, 0.5);
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-transition: 0.1s;
+    transition: 0.1s;
+  }
+}
