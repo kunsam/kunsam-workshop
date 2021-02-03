@@ -155,6 +155,7 @@ function Component() {
       </div>
 
       <FixedHeroContainer
+        totalRange={[500, 5000]}
         baseZindex={1}
         childs={[
           {

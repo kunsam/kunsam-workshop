@@ -9,18 +9,25 @@ interface Props {
     scrollRange: [number, number];
     content: React.ReactNode;
   }[];
+  totalRange: [number, number];
 }
 
-function Component({ childs, containerStyle, baseZindex }: Props) {
+function Component({ childs, containerStyle, baseZindex, totalRange }: Props) {
   // const [scrollY, setscrollY] = useState(0);
   const [activeIndex, setactiveIndex] = useState(null);
+  const [disappear, setdisappear] = useState(false);
 
   const onScrollYChange = useCallback((nextY: number) => {
+    if (nextY >= totalRange[1] || nextY < totalRange[0]) {
+      setdisappear(true);
+    } else {
+      setdisappear(false);
+    }
     const findActiveChilds = findIndex(
       childs,
       (child) => child.scrollRange[0] <= nextY && child.scrollRange[1] >= nextY
     );
-    console.log(nextY, findActiveChilds, "onScrollYChange");
+    // console.log(nextY, "onScrollYChange");
     if (findActiveChilds >= 0) {
       setactiveIndex(findActiveChilds);
     } else {
@@ -41,6 +48,9 @@ function Component({ childs, containerStyle, baseZindex }: Props) {
     };
   }, []);
 
+  if (disappear) {
+    return null;
+  }
   return (
     <div style={containerStyle}>
       {childs.map((child, childI) => {
