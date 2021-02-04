@@ -71,11 +71,11 @@ function Component({}: Props) {
             </h2>
           </Link>
 
-          <Link href="/about">
+          {/* <Link href="/about">
             <h2 style={{ color: "#fff", zIndex: 1, flex: "1 0 100%;" }}>
               关于我
             </h2>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </section>
