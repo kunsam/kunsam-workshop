@@ -1,4 +1,5 @@
 {
   "name": "kunsam-workshop",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {}
 }

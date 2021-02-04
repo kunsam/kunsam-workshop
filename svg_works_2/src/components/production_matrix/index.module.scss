@@ -1,0 +1,112 @@
+.ProdutionMatrix {
+  :global(.lines) {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    z-index: 1;
+
+    :global(.horizontal),
+    :global(.vertical) {
+      opacity: 0.16;
+      background-color: #fff;
+      position: absolute;
+    }
+
+    :global(.horizontals) {
+      :global(.horizontal) {
+        height: 1px;
+        left: 0;
+        right: 0;
+        transition: 1s ease-in-out width;
+
+        &:nth-child(1) {
+          top: 7.63889vw;
+          right: auto;
+          width: 0;
+        }
+        &:nth-child(2) {
+          top: 19.09vw;
+          right: auto;
+          width: 0;
+        }
+        &:nth-child(3) {
+          right: auto;
+          width: 0;
+          bottom: 190px;
+        }
+        &:nth-child(4) {
+          right: auto;
+          width: 0;
+          bottom: 0;
+        }
+      }
+      :global(.horizontal.animated) {
+        width: 100% !important;
+      }
+    }
+
+    :global(.verticals) {
+      :global(.vertical) {
+        width: 1px;
+        top: 0;
+        bottom: 0;
+        transition: 1s ease-in-out height;
+
+        &:nth-child(1) {
+          left: 4.16667vw;
+          bottom: auto;
+          height: 0;
+        }
+        &:nth-child(2) {
+          left: 21.875vw;
+          bottom: auto;
+          height: 0;
+        }
+        &:nth-child(3) {
+          left: 39.51389vw;
+          bottom: auto;
+          height: 0;
+        }
+        &:nth-child(4) {
+          right: 42.70833vw;
+          bottom: auto;
+          height: 0;
+        }
+        &:nth-child(5) {
+          right: 25vw;
+          bottom: auto;
+          height: 0;
+        }
+        &:nth-child(6) {
+          right: 20.83333vw;
+          bottom: auto;
+          height: 0;
+        }
+        &:nth-child(7) {
+          right: 4.16667vw;
+          bottom: auto;
+          height: 0;
+        }
+      }
+      :global(.vertical.animated) {
+        height: 100% !important;
+      }
+    }
+  }
+
+  :global(.lines.yellow) {
+    z-index: 2;
+    --clip-x: 0;
+    --clip-y: 0;
+    -webkit-clip-path: circle(4.16667vw at var(--clip-x) var(--clip-y));
+    clip-path: circle(4.16667vw at var(--clip-x) var(--clip-y));
+
+    :global(.horizontal),
+    :global(.vertical) {
+      background-color: #f8ff13;
+      opacity: 1;
+    }
+  }
+}
