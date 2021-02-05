@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "lib": ["DOM", "dom.iterable", "esnext"],
+    "typeRoots": ["node_modules/@types"]
+  },
+  "include": ["src/**/*"]
+}

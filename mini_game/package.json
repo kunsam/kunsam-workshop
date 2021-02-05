@@ -1,0 +1,19 @@
+{
+  "name": "mini_game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "output/index.js",
+  "scripts": {
+    "dev": "parcel ./src/index.html",
+    "build": "parcel build ./src/index.html",
+    "build-js": "parcel build ./src/game/index.ts -d output",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pub-npm": "npm version patch && npm publish"
+  },
+  "author": "kunsam",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "typescript": "^4.1.3"
+  }
+}
