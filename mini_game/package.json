@@ -1,6 +1,6 @@
 {
-  "name": "kunsam-mini_game_1",
-  "version": "1.0.2",
+  "name": "kunsam-mini-game",
+  "version": "1.0.3",
   "description": "",
   "main": "output/index.js",
   "scripts": {
