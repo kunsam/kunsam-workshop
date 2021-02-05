@@ -46,4 +46,22 @@ export default class Game {
     }
     this.currentPage = this.pagesMap.get(key);
   }
+
+  public ontouchstart(ev: TouchEvent) {
+    if (this.currentPage) {
+      this.currentPage.ontouchstart(ev);
+    }
+  }
+
+  public ontouchmove(ev: TouchEvent) {
+    if (this.currentPage) {
+      this.currentPage.ontouchmove(ev);
+    }
+  }
+
+  public ontouchend(ev: TouchEvent) {
+    if (this.currentPage) {
+      this.currentPage.ontouchend(ev);
+    }
+  }
 }

@@ -7,4 +7,7 @@ export default class GamePage {
   public id: string;
   public renderFrame: FrameRequestCallback;
   public reset() {}
+  public ontouchstart: (ev: TouchEvent) => void;
+  public ontouchmove: (ev: TouchEvent) => void;
+  public ontouchend: (ev: TouchEvent) => void;
 }

@@ -10,5 +10,7 @@ export default class GamePage1 extends GamePage {
     ctx.arc(100, 75, 50, 0, 2 * Math.PI);
     ctx.strokeStyle = "blue";
     ctx.stroke();
+
+    // ctx.rect()
   };
 }
