@@ -1,19 +1,16 @@
 {
   "name": "kunsam-mini-game",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
-  "main": "output/index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "dev": "parcel ./src/index.html",
-    "build": "parcel build ./src/index.html",
-    "build-js": "parcel build ./src/game/index.ts -d output",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "pub-npm": "npm version patch && npm publish"
+    "tsc": "shx rm -rf lib && tsc -p tsconfig.json",
+    "pub-npm": "npm run tsc && npm version patch -m 'Upgrade to %s for reasons' && npm publish"
   },
   "author": "kunsam",
   "license": "ISC",
   "devDependencies": {
-    "parcel-bundler": "^1.12.4",
+    "shx": "^0.3.3",
     "typescript": "^4.1.3"
   }
 }

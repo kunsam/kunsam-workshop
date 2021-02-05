@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "declaration": true,
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "lib",
     "lib": ["DOM", "dom.iterable", "esnext"],
     "typeRoots": ["node_modules/@types"]
   },
