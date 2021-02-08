@@ -1,0 +1,42 @@
+<html>
+<head>
+  <meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"
+/>
+<script type="text/javascript">
+
+function log(msg)
+{
+  var textArea;
+
+  textArea = document.getElementById("logArea");
+  textArea.value = msg + "\n" + textArea.value;
+}
+
+function clearLog()
+{
+  var textArea;
+
+  textArea = document.getElementById("logArea");
+  textArea.value = "";
+}
+
+</script>
+
+<script type="text/javascript" src="blobsallad.js">
+</script>
+
+<style type="text/css">
+
+</style>
+
+</head>
+
+<body onload="init();" style="margin: 0;">
+
+<canvas id="blob" width="375" height="667" style="background: rgba(0, 0, 0, 0.9);"></canvas>
+
+
+</body>
+</head>

@@ -15,15 +15,13 @@ export default class Game {
   ) {
     this._ctx = ctx;
     this._canvasSize = canvasSize;
-    const gamepage1 = new GamePage1(ctx, [canvasSize.width, canvasSize.height]);
+    const gamepage1 = new GamePage1(ctx);
     this.pagesMap.set(gamepage1.id, gamepage1);
 
-    const gamepage2 = new GamePage2(ctx, [canvasSize.width, canvasSize.height]);
+    const gamepage2 = new GamePage2(ctx);
     this.pagesMap.set(gamepage2.id, gamepage2);
 
     this.changePage(gamepage1.id);
-
-    console.log(window.innerWidth, window.innerHeight, "windowwindow");
     // setTimeout(() => {
     //   this.changePage(gamepage2.id);
     // }, 3000);
@@ -34,7 +32,7 @@ export default class Game {
   }
 
   public renderFrame: FrameRequestCallback = (time) => {
-    // console.log(this.currentPageKey, time, "renderFrame");
+    console.log(this.currentPageKey, time, "renderFrame");
     this.clearFrame();
     if (this.currentPage) {
       this.currentPage.renderFrame(time);

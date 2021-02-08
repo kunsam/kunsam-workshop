@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "tsc": "shx rm -rf lib && tsc -p tsconfig.json",
-    "cp-test": "cp -rf ./lib ../test_mini_game/node_modules/kunsam-mini-game/",
+    "cp-test": "npm run tsc && cp -rf ./lib ../test_mini_game/node_modules/kunsam-mini-game/",
     "pub-test": "shx rm -rf lib && tsc -p tsconfig.json && npm run cp-test",
     "pub-npm": "npm run tsc && npm version patch -m 'Upgrade to %s for reasons' && npm publish"
   },
