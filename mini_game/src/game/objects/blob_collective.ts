@@ -6,9 +6,9 @@ import ObjBlob from "./blob";
 
 export default class ObjBlobCollective {
   private maxNum: number;
-  private numActive: number;
+  // private numActive: number;
   private tmpForce: Vector2;
-  private blobs: ObjBlob[];
+  public blobs: ObjBlob[];
 
   public id: string;
   constructor({
@@ -18,14 +18,14 @@ export default class ObjBlobCollective {
   }: GameBlobNamespace.BlobCollectiveProps) {
     this.id = id;
     this.maxNum = collectMaxNum;
-    this.numActive = 1;
+    // this.numActive = 1;
     this.blobs = new Array();
     this.tmpForce = new Vector2(0.0, 0.0);
     this.selectedBlob = null;
     this.blobs[0] = new ObjBlob(firstBlob);
   }
 
-  private selectedBlob: ObjBlob;
+  public selectedBlob: ObjBlob;
   public getSelectData(
     x: number,
     y: number
@@ -70,6 +70,12 @@ export default class ObjBlobCollective {
     return undefined;
   }
 
+  public removeBlob(blob: ObjBlob) {
+    this.blobs = this.blobs.filter((b) => b.id !== blob.id);
+    if (this.selectedBlob.id === blob.id) {
+      this.unselectBlob();
+    }
+  }
   public selectBlob(blob: ObjBlob) {
     this.selectedBlob = blob;
     this.selectedBlob.selected = true;
@@ -132,5 +138,55 @@ export default class ObjBlobCollective {
       }
       this.blobs[i].setForce(force);
     }
+  }
+
+  public joint(jointedBlob: ObjBlob, InThisTargetBlob: ObjBlob): boolean {
+    const targetBlobIndex = this.blobs.findIndex(
+      (b) => b.id === InThisTargetBlob.id
+    );
+    if (targetBlobIndex < 0) {
+      return false;
+    }
+    const r1 = jointedBlob.radius;
+    const r2 = InThisTargetBlob.radius;
+    const r3 = Math.sqrt(r1 * r1 + r2 * r2);
+    this.blobs[targetBlobIndex].scale((0.945 * r3) / r2);
+    return true;
+  }
+
+  public split() {
+    var i,
+      maxIndex = 0,
+      maxRadius = 0.0;
+    var emptySlot;
+    var motherBlob, newBlob;
+
+    emptySlot = this.blobs.length;
+    for (i = 0; i < this.blobs.length; i++) {
+      if (this.blobs[i] != null && this.blobs[i].radius > maxRadius) {
+        maxRadius = this.blobs[i].radius;
+        motherBlob = this.blobs[i];
+      } else if (this.blobs[i] == null) {
+        emptySlot = i;
+      }
+    }
+
+    motherBlob.scale(0.75);
+    newBlob = new ObjBlob({
+      id: `${this.blobs.length + 1}`,
+      cx: motherBlob.middlePointMass.cur.x,
+      cy: motherBlob.middlePointMass.cur.y,
+      radius: motherBlob.radius,
+      numPointMasses: 8,
+    });
+
+    for (i = 0; i < this.blobs.length; i++) {
+      if (this.blobs[i] == null) {
+        continue;
+      }
+      this.blobs[i].addBlob(newBlob);
+      newBlob.addBlob(this.blobs[i]);
+    }
+    this.blobs[emptySlot] = newBlob;
   }
 }

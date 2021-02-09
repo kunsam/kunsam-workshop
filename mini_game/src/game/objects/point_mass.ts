@@ -49,14 +49,14 @@ export default class PointMass {
     return cXpX * cXpX + cYpY * cYpY;
   }
   public draw(ctx: CanvasRenderingContext2D, scaleFactor: number) {
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     ctx.fillStyle = "#000000";
     ctx.strokeStyle = "#000000";
     ctx.beginPath();
     ctx.arc(
       this.cur.x * scaleFactor,
       this.cur.y * scaleFactor,
-      4.0,
+      2.0,
       0.0,
       Math.PI * 2.0,
       true

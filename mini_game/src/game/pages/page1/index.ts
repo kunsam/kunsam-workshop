@@ -1,4 +1,5 @@
 import GesturesArea, { GesturesAreaSwipeEvent } from "../../core/gesture_area";
+import { TouchableAreaEvents } from "../../core/touchable_area";
 import { drawPolygon } from "../../draw/polygon";
 import { getPointsFromRect } from "../../map/rect_2_points";
 import ObjBlobCollective from "../../objects/blob_collective";
@@ -6,8 +7,9 @@ import GamePage from "../../page";
 import { GameGeometry } from "../../typings/game_geometry";
 import GAME_ALL_PAGE_KEYS from "../all_page_key";
 import EjectedBlobsManager from "./ejected_blobs_manager";
-import PlayBlobsManager from "./play_blobs_manager";
-import { getInitEjectArea } from "./ui_config";
+import PlayBlobsManager, { PlayMode } from "./play_blobs_manager";
+import { PlayModeButton } from "./play_mode_button";
+import { getInitEjectArea, getPlayButtonArea } from "./ui_config";
 
 function getTouchCoords(ev: TouchEvent): GameGeometry.IVector2 {
   const touch = ev.touches[0];
@@ -21,6 +23,8 @@ export default class GamePage1 extends GamePage {
   public id = GAME_ALL_PAGE_KEYS.page1;
 
   private _initEjectArea: GesturesArea;
+
+  private _togglePlayModeButton: PlayModeButton;
 
   private _testObjBlobCollective: ObjBlobCollective;
 
@@ -45,6 +49,15 @@ export default class GamePage1 extends GamePage {
       }
     );
 
+    const pbArea = getPlayButtonArea(canvasSize[0], canvasSize[1]);
+    this._togglePlayModeButton = new PlayModeButton(
+      getPointsFromRect(pbArea.x, pbArea.y, pbArea.width, pbArea.height)
+    );
+    this._togglePlayModeButton.addEventListeners(
+      TouchableAreaEvents.click,
+      this.handleTogglePlayMode.bind(this)
+    );
+
     this._initEjectArea.addGestureEventListeners(
       "swipeout",
       this.onEjectInitBlob
@@ -54,7 +67,11 @@ export default class GamePage1 extends GamePage {
     this._ejectedBlobManager = new EjectedBlobsManager({
       onBlobEjectedFinish: this.handleBlobEejectFinish.bind(this),
     });
-    this._playBlobManager = new PlayBlobsManager();
+    this._playBlobManager = new PlayBlobsManager(canvasSize);
+  }
+
+  public handleTogglePlayMode() {
+    this._playBlobManager.togglePlayMode();
   }
 
   public handleBlobEejectFinish(bcollective: ObjBlobCollective) {
@@ -63,15 +80,18 @@ export default class GamePage1 extends GamePage {
 
   public ontouchstart = (ev: TouchEvent) => {
     this._initEjectArea.ontouchstart(ev);
+    this._togglePlayModeButton.ontouchstart(ev);
     this._playBlobManager.ontouchstart(ev);
   };
   public ontouchmove = (ev: TouchEvent) => {
     // console.log("ontouchmove");
     this._initEjectArea.ontouchmove(ev);
+    this._togglePlayModeButton.ontouchmove(ev);
     this._playBlobManager.ontouchmove(ev);
   };
   public ontouchend = (ev: TouchEvent) => {
     this._initEjectArea.ontouchend(ev);
+    this._togglePlayModeButton.ontouchend(ev);
     this._playBlobManager.ontouchend(ev);
   };
   // private _blobs
@@ -107,14 +127,17 @@ export default class GamePage1 extends GamePage {
     // }
     // this._blobs.forEach(blob => {
     //   blob.renderFrame(time)
-    // })
+    // })s
     // this._initEjectedBlobs.forEach(blob => {
     //   blob.renderFrame(time)
     // })
-
     this._playBlobManager.draw(this._ctx, this.SCALE_FACTOR);
     this._ejectedBlobManager.draw(this._ctx, this.SCALE_FACTOR);
-
+    this._togglePlayModeButton.draw(
+      this._ctx,
+      this.SCALE_FACTOR,
+      this._playBlobManager.playmode === PlayMode.joint ? "#f00" : "#000"
+    );
     // ctx.rect()
   };
 }

@@ -1,9 +1,12 @@
 import { RectBoundBox } from "../../core/bound_box";
+import LineSegment from "../../core/line_segment";
 import Polygon from "../../core/polygon";
 import Vector2 from "../../core/vector2";
+import ObjBlob from "../../objects/blob";
 import ObjBlobCollective from "../../objects/blob_collective";
 import { GameBlobNamespace } from "../../typings/game_blob";
 import { GameGeometry } from "../../typings/game_geometry";
+import { getInitEjectArea } from "./ui_config";
 function getTouchCoords(ev: TouchEvent): GameGeometry.IVector2 {
   const touch = ev.touches[0];
   if (!touch) {
@@ -12,24 +15,52 @@ function getTouchCoords(ev: TouchEvent): GameGeometry.IVector2 {
   return [touch.pageX, touch.pageY];
 }
 
+export enum PlayMode {
+  "joint" = "joint",
+  "split" = "split",
+}
+
+export interface IDistanceBlobTarget {
+  blob?: ObjBlob;
+  distance: number;
+  blobCollective?: ObjBlobCollective;
+}
+
 export default class PlayBlobsManager {
+  public idNumber: number = 0;
   public blobs: Map<string, ObjBlobCollective> = new Map();
-
-  public gravity = new Vector2(0.0, 1000.0);
-
-  constructor() {}
-
   public MAX_BLOBS_NUM = 8;
 
-  // 活动区域
-  public activePolygon: Polygon = new Polygon([
-    [0, 367],
-    [375, 367],
-    [375, 667],
-    [0, 667],
-  ]);
+  public gravity = new Vector2(0.0, 1000.0);
+  public playmode: PlayMode = PlayMode.joint;
 
-  public reactBoundBox: RectBoundBox = new RectBoundBox(0, 367, 375, 300);
+  // 活动区域
+  public activePolygon: Polygon;
+  public reactBoundBox: RectBoundBox;
+  // 移除的范围
+  public removeBoundBox: RectBoundBox;
+
+  constructor(canvasSize: GameGeometry.IVector2) {
+    this.activePolygon = new Polygon([
+      [0, canvasSize[1] - 300],
+      [canvasSize[0], canvasSize[1] - 300],
+      [canvasSize[0], canvasSize[1]],
+      [0, canvasSize[1]],
+    ]);
+    this.reactBoundBox = new RectBoundBox(
+      0,
+      canvasSize[1] - 300,
+      canvasSize[0],
+      300
+    );
+    const iarea = getInitEjectArea(canvasSize[0], canvasSize[1]);
+    this.removeBoundBox = new RectBoundBox(
+      iarea.x,
+      iarea.y,
+      iarea.width,
+      iarea.height
+    );
+  }
 
   public DEFAULT_BLOB_CONFIG: GameBlobNamespace.BlobCollectiveConfig = {
     firstBlob: {
@@ -40,7 +71,7 @@ export default class PlayBlobsManager {
   };
 
   private getId() {
-    return `PlayBlobsManager-BlobCollective-${this.blobs.size}`;
+    return `PlayBlobsManager-BlobCollective-${this.idNumber++}`;
   }
 
   public add(
@@ -68,50 +99,216 @@ export default class PlayBlobsManager {
     );
   }
 
+  public delete(id: string) {
+    this.blobs.delete(id);
+  }
+
   public addCollective(bc: ObjBlobCollective) {
     const collectiveId = this.getId();
     bc.id = collectiveId;
     this.blobs.set(collectiveId, bc);
   }
 
+  public unselect() {
+    if (this.selectedBlobCollective) {
+      this.selectedBlobCollective.bc.unselectBlob();
+    }
+    this.selectedBlobCollective = undefined;
+  }
+
+  public removeBlob(bc: ObjBlobCollective, target: ObjBlob) {
+    bc.removeBlob(target);
+    if (bc.blobs.length === 0) {
+      this.delete(bc.id);
+    }
+    console.log(this.blobs, "removeBlob");
+  }
+
+  public findClosestBlobCollective(
+    target: ObjBlob,
+    excludeId: string[]
+  ): IDistanceBlobTarget {
+    const excludeSet = new Set(excludeId);
+    let minDistance = 10000;
+    let minBlobCollective: ObjBlobCollective;
+    let minBlob: ObjBlob;
+    this.blobs.forEach((blobc) => {
+      if (excludeSet.has(blobc.id)) {
+        return;
+      }
+      blobc.blobs.forEach((blob) => {
+        const distance = new Vector2()
+          .subVectors(target.middlePointMass.cur, blob.middlePointMass.cur)
+          .length();
+        if (distance < minDistance) {
+          minBlobCollective = blobc;
+          minBlob = blob;
+          minDistance = distance;
+        }
+      });
+    });
+    return {
+      distance: minDistance,
+      blobCollective: minBlobCollective,
+      blob: minBlob,
+    };
+  }
+
+  public findPerpenClosesetBlobCollective(
+    pathV2: LineSegment
+  ): IDistanceBlobTarget {
+    let minDistance = 10000;
+    let minBlobCollective: ObjBlobCollective;
+    let minBlob: ObjBlob;
+
+    this.blobs.forEach((blobc) => {
+      blobc.blobs.forEach((blob) => {
+        const middlePointV2 = pathV2.middlePoint();
+        const perpenDistance = blob.middlePointMass.cur.distanceTo(
+          middlePointV2
+        );
+        if (perpenDistance <= blob.radius && perpenDistance < minDistance) {
+          minBlob = blob;
+          minBlobCollective = blobc;
+          minDistance = perpenDistance;
+        }
+      });
+    });
+
+    return {
+      distance: minDistance,
+      blobCollective: minBlobCollective,
+      blob: minBlob,
+    };
+  }
+
+  public handleSplit(ev: TouchEvent): { handled: boolean } {
+    if (!this.selectedBlobCollective && this.savedTouchStartCoords) {
+      const touchcoords = getTouchCoords(ev);
+      // const movePath = new Vector2().subVectors(
+      //   new Vector2(touchcoords[0], touchcoords[1]),
+      //   new Vector2(
+      //     this.savedTouchStartCoords[0],
+      //     this.savedTouchStartCoords[1]
+      //   )
+      // );
+      const movePath = new LineSegment(
+        new Vector2(
+          this.savedTouchStartCoords[0],
+          this.savedTouchStartCoords[1]
+        ),
+        new Vector2(touchcoords[0], touchcoords[1])
+      );
+
+      if (movePath.length() > 30) {
+        const findData = this.findPerpenClosesetBlobCollective(movePath);
+        console.log(findData, "findData");
+        if (findData.blob) {
+          findData.blobCollective.split();
+        }
+      }
+    }
+    return {
+      handled: false,
+    };
+  }
+  public handleJoint(): { handled: boolean } {
+    // const touchcoords = getTouchCoords(ev);
+
+    if (
+      this.selectedBlobCollective &&
+      this.selectedBlobCollective.bc.selectedBlob
+    ) {
+      const selectedBc = this.selectedBlobCollective.bc;
+      const selectedBlob = selectedBc.selectedBlob;
+      const findData = this.findClosestBlobCollective(selectedBlob, [
+        selectedBc.id,
+      ]);
+      // 选中的必须比目标半径小
+      if (
+        findData.blobCollective &&
+        findData.blob &&
+        selectedBlob.radius <= findData.blob.radius
+      ) {
+        const success = findData.blobCollective.joint(
+          selectedBlob,
+          findData.blob
+        );
+        if (success) {
+          this.removeBlob(selectedBc, selectedBlob);
+          return {
+            handled: true,
+          };
+        }
+      }
+    }
+    return {
+      handled: false,
+    };
+  }
+
   public selectedBlobCollective: {
     bc: ObjBlobCollective;
     offset: Vector2;
   };
+
+  private savedTouchStartCoords: GameGeometry.IVector2;
   private savedTouchMoveCoords: GameGeometry.IVector2;
 
   public ontouchstart = (ev: TouchEvent) => {
     const touchcoords = getTouchCoords(ev);
     let minselectOffset: Vector2 = new Vector2(10000, 10000);
-    let minselectblob: ObjBlobCollective;
+    let minselectblobCollective: ObjBlobCollective;
+    let minselectblob: ObjBlob;
     this.blobs.forEach((bc) => {
       const selectData = bc.getSelectData(touchcoords[0], touchcoords[1]);
       if (selectData) {
         if (selectData.offset.length() < minselectOffset.length()) {
           minselectOffset = selectData.offset;
-          minselectblob = bc;
+          minselectblobCollective = bc;
+          minselectblob = selectData.blob;
         }
       }
     });
-    console.log(minselectblob, "minselectblob");
-    if (minselectblob) {
+    if (minselectblobCollective) {
       this.selectedBlobCollective = {
-        bc: minselectblob,
+        bc: minselectblobCollective,
         offset: minselectOffset,
       };
+      minselectblobCollective.selectBlob(minselectblob);
     }
-    console.log(this.blobs, "this.blobs");
+    this.savedTouchStartCoords = touchcoords;
   };
 
   public ontouchmove = (ev: TouchEvent) => {
+    const handle = this.handleSplit(ev);
+    if (handle.handled) {
+      return;
+    }
+
     if (this.selectedBlobCollective) {
       const touchcoords = getTouchCoords(ev);
+      const { collide } = this.removeBoundBox.collision(
+        new Vector2(touchcoords[0], touchcoords[1])
+      );
+      if (!collide) {
+        this.delete(this.selectedBlobCollective.bc.id);
+        this.unselect();
+        this.savedTouchMoveCoords = undefined;
+        return;
+      }
 
+      if (this.playmode === "joint") {
+        // playmode
+        const handleJoint = this.handleJoint();
+        if (handleJoint.handled) {
+          return;
+        }
+      }
       this.selectedBlobCollective.bc.selectedBlobMoveTo(
         touchcoords[0] - this.selectedBlobCollective.offset.x,
         touchcoords[1] - this.selectedBlobCollective.offset.y
       );
-
       this.savedTouchMoveCoords = touchcoords;
     }
   };
@@ -121,6 +318,7 @@ export default class PlayBlobsManager {
       this.selectedBlobCollective.bc.unselectBlob();
       this.selectedBlobCollective = undefined;
       this.savedTouchMoveCoords = undefined;
+      this.savedTouchStartCoords = undefined;
     }
   };
 
@@ -143,10 +341,17 @@ export default class PlayBlobsManager {
   }
 
   public draw(ctx: CanvasRenderingContext2D, scaleFactor: number) {
-    // console.log(this.blobs, 'this.blobs')
     this.blobs.forEach((bc) => {
       bc.draw(ctx, scaleFactor);
       this.update(bc);
     });
+  }
+
+  public togglePlayMode() {
+    if (this.playmode === PlayMode.joint) {
+      this.playmode = PlayMode.split;
+    } else {
+      this.playmode = PlayMode.joint;
+    }
   }
 }

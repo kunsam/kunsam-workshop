@@ -34,6 +34,17 @@ export default class LineSegment {
     return new Vector2().subVectors(this.endPoint, this.startPoint).length();
   }
 
+  public middlePoint() {
+    const dir = this.vector2().normalize();
+    const middlePoint = this.startPoint
+      .clone()
+      .add(dir.multiplyScalar(this.length() / 2));
+    return middlePoint
+  }
+  public vector2() {
+    return new Vector2().subVectors(this.endPoint, this.startPoint);
+  }
+
   public intersectLineSegment(
     lineSegment: LineSegment,
     precision?: number

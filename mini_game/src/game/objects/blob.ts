@@ -95,6 +95,18 @@ export default class ObjBlob {
     }
   }
 
+  public scale(scaleFactor: number) {
+    var i;
+
+    for (i = 0; i < this.joints.length; i++) {
+      this.joints[i].scale(scaleFactor);
+    }
+    for (i = 0; i < this.sticks.length; i++) {
+      this.sticks[i].scale(scaleFactor);
+    }
+    this.radius *= scaleFactor;
+  }
+
   private getPointMass(index: number) {
     index += this.pointMasses.length;
     index = index % this.pointMasses.length;
@@ -256,12 +268,29 @@ export default class ObjBlob {
     ctx.stroke();
     ctx.fill();
   }
+
+  public addBlob = function (blob: ObjBlob) {
+    var index = this.joints.length;
+    var dist;
+
+    this.joints[index] = new Joint(
+      this.middlePointMass,
+      blob.middlePointMass,
+      0.0,
+      0.0
+    );
+    dist = this.radius + blob.radius;
+    this.joints[index].setDist(dist * 0.95, 0.0);
+  };
+
   public draw(ctx: CanvasRenderingContext2D, scaleFactor: number) {
     this.drawBody(ctx, scaleFactor);
 
-    this.pointMasses[0].draw(ctx, scaleFactor);
-    this.pointMasses[1].draw(ctx, scaleFactor);
-    this.sticks.forEach((stick) => stick.draw(ctx, scaleFactor));
+    // this.pointMasses[0].draw(ctx, scaleFactor);
+    // this.pointMasses[1].draw(ctx, scaleFactor);
+    this.pointMasses.forEach((pt) => pt.draw(ctx, scaleFactor));
+    this.middlePointMass.draw(ctx, scaleFactor);
+    // this.sticks.forEach((stick) => stick.draw(ctx, scaleFactor));
 
     // ctx.strokeStyle = "#000000";
     // ctx.fillStyle = "#000000";
