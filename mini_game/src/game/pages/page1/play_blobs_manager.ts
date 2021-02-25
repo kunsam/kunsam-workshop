@@ -49,7 +49,7 @@ export default class PlayBlobsManager {
     ]);
     this.reactBoundBox = new RectBoundBox(
       0,
-      canvasSize[1] - 300,
+      canvasSize[1] - 400,
       canvasSize[0],
       300
     );
@@ -121,7 +121,6 @@ export default class PlayBlobsManager {
     if (bc.blobs.length === 0) {
       this.delete(bc.id);
     }
-    console.log(this.blobs, "removeBlob");
   }
 
   public findClosestBlobCollective(
@@ -182,16 +181,14 @@ export default class PlayBlobsManager {
     };
   }
 
+  // 单次只能切割一次
+  private splitedInOneTouchProgress = false;
   public handleSplit(ev: TouchEvent): { handled: boolean } {
+    if (this.splitedInOneTouchProgress) {
+      return { handled: false };
+    }
     if (!this.selectedBlobCollective && this.savedTouchStartCoords) {
       const touchcoords = getTouchCoords(ev);
-      // const movePath = new Vector2().subVectors(
-      //   new Vector2(touchcoords[0], touchcoords[1]),
-      //   new Vector2(
-      //     this.savedTouchStartCoords[0],
-      //     this.savedTouchStartCoords[1]
-      //   )
-      // );
       const movePath = new LineSegment(
         new Vector2(
           this.savedTouchStartCoords[0],
@@ -199,12 +196,11 @@ export default class PlayBlobsManager {
         ),
         new Vector2(touchcoords[0], touchcoords[1])
       );
-
       if (movePath.length() > 30) {
         const findData = this.findPerpenClosesetBlobCollective(movePath);
-        console.log(findData, "findData");
         if (findData.blob) {
           findData.blobCollective.split();
+          this.splitedInOneTouchProgress = true;
         }
       }
     }
@@ -212,6 +208,7 @@ export default class PlayBlobsManager {
       handled: false,
     };
   }
+
   public handleJoint(): { handled: boolean } {
     // const touchcoords = getTouchCoords(ev);
 
@@ -281,19 +278,28 @@ export default class PlayBlobsManager {
   };
 
   public ontouchmove = (ev: TouchEvent) => {
-    const handle = this.handleSplit(ev);
-    if (handle.handled) {
-      return;
+    if (this.playmode === PlayMode.split) {
+      const handle = this.handleSplit(ev);
+      if (handle.handled) {
+        return;
+      }
     }
 
-    if (this.selectedBlobCollective) {
+    if (
+      this.selectedBlobCollective &&
+      this.selectedBlobCollective.bc.selectedBlob
+    ) {
       const touchcoords = getTouchCoords(ev);
       const { collide } = this.removeBoundBox.collision(
         new Vector2(touchcoords[0], touchcoords[1])
       );
       if (!collide) {
-        this.delete(this.selectedBlobCollective.bc.id);
-        this.unselect();
+        this.removeBlob(
+          this.selectedBlobCollective.bc,
+          this.selectedBlobCollective.bc.selectedBlob
+        );
+        // this.delete(this.selectedBlobCollective.bc.id);
+        // this.unselect();
         this.savedTouchMoveCoords = undefined;
         return;
       }
@@ -320,6 +326,7 @@ export default class PlayBlobsManager {
       this.savedTouchMoveCoords = undefined;
       this.savedTouchStartCoords = undefined;
     }
+    this.splitedInOneTouchProgress = false;
   };
 
   public update(blobColl: ObjBlobCollective) {

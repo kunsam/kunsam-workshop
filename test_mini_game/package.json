@@ -16,6 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "kunsam-mini-game": "^1.0.5"
+    "kunsam-mini-game": "^1.0.8"
   }
 }

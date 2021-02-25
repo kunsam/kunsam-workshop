@@ -1,0 +1,29 @@
+{
+  "name": "link_link_1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "parcel-bundler": "^1.12.4",
+    "react-dom": "^17.0.1",
+    "react": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "typescript": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
+    "@types/react-router-dom": "^5.1.7",
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.32.8",
+    "typescript": "^4.1.5"
+  },
+  "scripts": {
+    "dev": "parcel ./src/index.html",
+    "build": "parcel build ./src/index.html",
+    "build-js": "parcel build ./src/game/index.ts -d output",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kunsam",
+  "license": "ISC"
+}

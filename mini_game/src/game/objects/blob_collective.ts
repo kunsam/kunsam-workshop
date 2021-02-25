@@ -50,7 +50,7 @@ export default class ObjBlobCollective {
       const dist = Math.sqrt(aXbX * aXbX + aYbY * aYbY);
       if (dist < minDist) {
         minDist = dist;
-        const ValidSelectedRadius = this.blobs[i].radius * 0.8;
+        const ValidSelectedRadius = this.blobs[i].radius * 1;
         if (dist < ValidSelectedRadius) {
           selectedBlob = this.blobs[i];
           selectOffset = { x: aXbX, y: aYbY };

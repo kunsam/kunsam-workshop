@@ -214,6 +214,242 @@ export default class ObjBlob {
     }
     this.middlePointMass.force = force;
   }
+
+  public drawHappyFace1(ctx: CanvasRenderingContext2D, scaleFactor: number) {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = "#000000";
+    ctx.beginPath();
+    ctx.arc(0.0, 0.0, this.radius * 0.25 * scaleFactor, 0, Math.PI, false);
+    ctx.stroke();
+  }
+  public drawHappyEyes1 = function (
+    ctx: CanvasRenderingContext2D,
+    scaleFactor: number
+  ) {
+    ctx.lineWidth = 1;
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.arc(
+      -0.15 * this.radius * scaleFactor,
+      -0.2 * this.radius * scaleFactor,
+      this.radius * 0.12 * scaleFactor,
+      0,
+      2.0 * Math.PI,
+      false
+    );
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(
+      0.15 * this.radius * scaleFactor,
+      -0.2 * this.radius * scaleFactor,
+      this.radius * 0.12 * scaleFactor,
+      0,
+      2.0 * Math.PI,
+      false
+    );
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#000000";
+    ctx.beginPath();
+    ctx.arc(
+      -0.15 * this.radius * scaleFactor,
+      -0.17 * this.radius * scaleFactor,
+      this.radius * 0.06 * scaleFactor,
+      0,
+      2.0 * Math.PI,
+      false
+    );
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(
+      0.15 * this.radius * scaleFactor,
+      -0.17 * this.radius * scaleFactor,
+      this.radius * 0.06 * scaleFactor,
+      0,
+      2.0 * Math.PI,
+      false
+    );
+    ctx.fill();
+  };
+  public drawHappyEyes2 = function (
+    ctx: CanvasRenderingContext2D,
+    scaleFactor: number
+  ) {
+    ctx.lineWidth = 1;
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.arc(
+      -0.15 * this.radius * scaleFactor,
+      -0.2 * this.radius * scaleFactor,
+      this.radius * 0.12 * scaleFactor,
+      0,
+      2.0 * Math.PI,
+      false
+    );
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(
+      0.15 * this.radius * scaleFactor,
+      -0.2 * this.radius * scaleFactor,
+      this.radius * 0.12 * scaleFactor,
+      0,
+      2.0 * Math.PI,
+      false
+    );
+    ctx.stroke();
+
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(
+      -0.25 * this.radius * scaleFactor,
+      -0.2 * this.radius * scaleFactor
+    );
+    ctx.lineTo(
+      -0.05 * this.radius * scaleFactor,
+      -0.2 * this.radius * scaleFactor
+    );
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(
+      0.25 * this.radius * scaleFactor,
+      -0.2 * this.radius * scaleFactor
+    );
+    ctx.lineTo(
+      0.05 * this.radius * scaleFactor,
+      -0.2 * this.radius * scaleFactor
+    );
+    ctx.stroke();
+  };
+
+  public drawHappyFace2(ctx: CanvasRenderingContext2D, scaleFactor: number) {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = "#000000";
+    ctx.beginPath();
+    ctx.arc(0.0, 0.0, this.radius * 0.25 * scaleFactor, 0, Math.PI, false);
+    ctx.fill();
+  }
+  public drawOohFace(ctx: CanvasRenderingContext2D, scaleFactor: number) {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = "#000000";
+    ctx.beginPath();
+    ctx.arc(
+      0.0,
+      0.1 * this.radius * scaleFactor,
+      this.radius * 0.25 * scaleFactor,
+      0,
+      Math.PI,
+      false
+    );
+    ctx.fill();
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      -0.25 * this.radius * scaleFactor,
+      -0.3 * this.radius * scaleFactor
+    );
+    ctx.lineTo(
+      -0.05 * this.radius * scaleFactor,
+      -0.2 * this.radius * scaleFactor
+    );
+    ctx.lineTo(
+      -0.25 * this.radius * scaleFactor,
+      -0.1 * this.radius * scaleFactor
+    );
+
+    ctx.moveTo(
+      0.25 * this.radius * scaleFactor,
+      -0.3 * this.radius * scaleFactor
+    );
+    ctx.lineTo(
+      0.05 * this.radius * scaleFactor,
+      -0.2 * this.radius * scaleFactor
+    );
+    ctx.lineTo(
+      0.25 * this.radius * scaleFactor,
+      -0.1 * this.radius * scaleFactor
+    );
+
+    ctx.stroke();
+  }
+
+  public drawFace(ctx: CanvasRenderingContext2D, scaleFactor: number) {
+    if (this.drawFaceStyle == 1 && Math.random() < 0.05) {
+      this.drawFaceStyle = 2;
+    } else if (this.drawFaceStyle == 2 && Math.random() < 0.1) {
+      this.drawFaceStyle = 1;
+    }
+
+    if (this.drawEyeStyle == 1 && Math.random() < 0.025) {
+      this.drawEyeStyle = 2;
+    } else if (this.drawEyeStyle == 2 && Math.random() < 0.3) {
+      this.drawEyeStyle = 1;
+    }
+
+    if (this.middlePointMass.getVelocity() > 0.004) {
+      this.drawOohFace(ctx, scaleFactor);
+    } else {
+      if (this.drawFaceStyle == 1) {
+        this.drawHappyFace1(ctx, scaleFactor);
+      } else {
+        this.drawHappyFace2(ctx, scaleFactor);
+      }
+
+      if (this.drawEyeStyle == 1) {
+        this.drawHappyEyes1(ctx, scaleFactor);
+      } else {
+        this.drawHappyEyes2(ctx, scaleFactor);
+      }
+    }
+  }
+
+  public drawEars(ctx: CanvasRenderingContext2D, scaleFactor: number) {
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = "#FFFFFF";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(
+      -0.55 * this.radius * scaleFactor,
+      -0.35 * this.radius * scaleFactor
+    );
+    ctx.lineTo(
+      -0.52 * this.radius * scaleFactor,
+      -0.55 * this.radius * scaleFactor
+    );
+    ctx.lineTo(
+      -0.45 * this.radius * scaleFactor,
+      -0.4 * this.radius * scaleFactor
+    );
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(
+      0.55 * this.radius * scaleFactor,
+      -0.35 * this.radius * scaleFactor
+    );
+    ctx.lineTo(
+      0.52 * this.radius * scaleFactor,
+      -0.55 * this.radius * scaleFactor
+    );
+    ctx.lineTo(
+      0.45 * this.radius * scaleFactor,
+      -0.4 * this.radius * scaleFactor
+    );
+    ctx.fill();
+    ctx.stroke();
+  }
+
   public drawBody(ctx: CanvasRenderingContext2D, scaleFactor: number) {
     var i;
 
@@ -286,33 +522,31 @@ export default class ObjBlob {
   public draw(ctx: CanvasRenderingContext2D, scaleFactor: number) {
     this.drawBody(ctx, scaleFactor);
 
-    // this.pointMasses[0].draw(ctx, scaleFactor);
-    // this.pointMasses[1].draw(ctx, scaleFactor);
-    this.pointMasses.forEach((pt) => pt.draw(ctx, scaleFactor));
+    // this.pointMasses.forEach((pt) => pt.draw(ctx, scaleFactor));
     this.middlePointMass.draw(ctx, scaleFactor);
     // this.sticks.forEach((stick) => stick.draw(ctx, scaleFactor));
 
-    // ctx.strokeStyle = "#000000";
-    // ctx.fillStyle = "#000000";
-    // ctx.save();
-    // ctx.translate(
-    //   this.middlePointMass.cur.x * scaleFactor,
-    //   (this.middlePointMass.cur.y - 0.35 * this.radius) * scaleFactor
-    // );
-    // const up = new Vector2(0.0, -1.0);
-    // const ori = new Vector2(0.0, 0.0);
-    // const cur0 = this.pointMasses[0].cur;
-    // ori.set(cur0.x, cur0.y);
-    // const cur_middle = this.middlePointMass.cur;
-    // ori.sub(cur_middle);
-    // const ang = Math.acos(ori.dot(up) / ori.length());
-    // if (ori.x < 0.0) {
-    //   ctx.rotate(-ang);
-    // } else {
-    //   ctx.rotate(ang);
-    // }
-    // this.drawEars(ctx, scaleFactor);
-    // this.drawFace(ctx, scaleFactor);
-    // ctx.restore();
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = "#000000";
+    ctx.save();
+    ctx.translate(
+      this.middlePointMass.cur.x * scaleFactor,
+      (this.middlePointMass.cur.y - 0.35 * this.radius) * scaleFactor
+    );
+    const up = new Vector2(0.0, -1.0);
+    const ori = new Vector2(0.0, 0.0);
+    const cur0 = this.pointMasses[0].cur;
+    ori.set(cur0.x, cur0.y);
+    const cur_middle = this.middlePointMass.cur;
+    ori.sub(cur_middle);
+    const ang = Math.acos(ori.dot(up) / ori.length());
+    if (ori.x < 0.0) {
+      ctx.rotate(-ang);
+    } else {
+      ctx.rotate(ang);
+    }
+    this.drawEars(ctx, scaleFactor);
+    this.drawFace(ctx, scaleFactor);
+    ctx.restore();
   }
 }
