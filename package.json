@@ -1,5 +1,8 @@
 {
   "name": "kunsam-workshop",
   "license": "MIT",
+  "scripts": {
+    "build": "cd svg_works_2 && npm run build"
+  },
   "dependencies": {}
 }
